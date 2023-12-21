@@ -1,3 +1,34 @@
+<?php
+session_start();
+$pesan = "";
+
+if(isset($_POST['tombol'])){
+
+//1. koneksi ke database
+include_once("koneksi.php");
+
+//2. mengambil nilai dari input
+$email = $_POST['email'];
+$password = md5($_POST['password']);
+
+//3. menulis query
+$qry = "SELECT * FROM users WHERE email='$email' AND password='$password'";
+
+// menjalankan query
+$result = mysqli_query($con,$qry);
+
+if($result){
+    $pesan = '<div class="alert alert-success" role="alert">
+    login berhasil!
+    </div>';
+}else{
+    $pesan = '<div class="alert alert-danger" role="alert">
+    login tidak valid!.
+    </div>';
+}
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,11 +51,15 @@
     <a href="index.php"><b>Admin</b>LTE</a>
   </div>
   <!-- /.login-logo -->
+  <?php
+    echo $pesan;
+  ?>
+
   <div class="card">
     <div class="card-body login-card-body">
       <p class="login-box-msg">Sign in to start your session</p>
 
-      <form action="proses_login.php" method="post">
+      <form action="login.php" method="post">
         <div class="input-group mb-3">
           <input type="email" name="email" class="form-control" placeholder="Email">
           <div class="input-group-append">
@@ -52,7 +87,7 @@
           </div>
           <!-- /.col -->
           <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            <button type="submit" name="tombol" class="btn btn-primary btn-block">Sign In</button>
           </div>
           <!-- /.col -->
         </div>
