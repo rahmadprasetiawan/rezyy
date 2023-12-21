@@ -14,13 +14,36 @@ $password = md5($_POST['password']);
 //3. menulis query
 $qry = "SELECT * FROM users WHERE email='$email' AND password='$password'";
 
-// menjalankan query
+//4. menjalankan query
 $result = mysqli_query($con,$qry);
 
-if($result){
-    $pesan = '<div class="alert alert-success" role="alert">
-    login berhasil!
-    </div>';
+//5. menghitung jumlah hasil query
+$hitung = mysqli_num_rows($result);
+
+if($hitung > 0){
+    //proses login
+
+    //1. mengambil seluruh data login
+    $data = mysqli_fetch_array($result);
+    $id = $data['id'];
+    $nama = $data['nama'];
+
+    //2. pembuatan session
+    $_SESSION['sid'] = $id;
+    $_SESSION['snama'] = $nama;
+    $_SESSION['semail'] = $email;
+
+    //3. update tanggal last log
+    $qry_update = "UPDATE users SET last_log='now()'
+    WHERE id='$id'";
+    $res_update = mysqli_query($con,$qry_update);
+    
+    //4. pengalihan ke halaman index
+    ?>
+    <script>
+        document.location="index.php";
+    </script>
+    <?php
 }else{
     $pesan = '<div class="alert alert-danger" role="alert">
     login tidak valid!.
